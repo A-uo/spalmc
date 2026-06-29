@@ -27,12 +27,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", required=True, type=Path, help="Directory for SpaLMC outputs.")
     parser.add_argument("--celltype-key", default=None, help="Column in adata_sc.obs with cell-type labels.")
     parser.add_argument("--layer-key", default=None, help="Optional AnnData layer to use instead of .X.")
-    parser.add_argument(
-        "--spot-prior-csv",
-        default=None,
-        type=Path,
-        help="Optional spot x cell-type prior CSV. Rows should match spatial spot names.",
-    )
     parser.add_argument("--genes", default=None, type=Path, help="Optional TXT/CSV marker gene list.")
     parser.add_argument("--max-epochs", default=500, type=int, help="Maximum training epochs.")
     parser.add_argument("--eval-every", default=20, type=int, help="Print training loss every N epochs.")
@@ -49,8 +43,7 @@ def main() -> None:
 
     adata_sc = ad.read_h5ad(args.adata_sc)
     adata_sp = ad.read_h5ad(args.adata_sp)
-    spot_prior = pd.read_csv(args.spot_prior_csv, index_col=0) if args.spot_prior_csv else None
-
+    
     adata_sc, adata_sp = pp_adatas(
         adata_sc,
         adata_sp,
@@ -59,13 +52,12 @@ def main() -> None:
         density_key="auto",
         copy=False,
     )
-
+    
     model = SpaLMC(
         adata_sc=adata_sc,
         adata_sp=adata_sp,
         celltype_key=args.celltype_key,
         layer_key=args.layer_key,
-        spot_celltype_prior=spot_prior,
         latent_dim=16,
         hidden_dim=128,
         dropout=0.3,
@@ -92,7 +84,7 @@ def main() -> None:
         patience=args.patience,
     )
     model.add_to_adata()
-
+    
     pred_cells = pd.DataFrame(
         {
             "cell": model.cell_names_,
@@ -104,15 +96,15 @@ def main() -> None:
     )
     if args.celltype_key and args.celltype_key in adata_sc.obs:
         pred_cells[args.celltype_key] = adata_sc.obs[args.celltype_key].astype(str).to_numpy()
-
+    
     pred_cells.to_csv(args.output_dir / "SpaLMC_pred_single_cell_xy.csv", index=False)
     model.get_spot_fill_summary().to_csv(args.output_dir / "SpaLMC_spot_fill_summary.csv", index=False)
     model.loss_history.to_csv(args.output_dir / "SpaLMC_training_history.csv", index=False)
-
+    
     spot_probs = model.get_spot_celltype_probabilities(as_dataframe=True)
     if spot_probs is not None:
         spot_probs.to_csv(args.output_dir / "SpaLMC_pred_cell_type_proportion.csv")
-
+    
     adata_sc.write_h5ad(args.output_dir / "adata_sc_with_spalmc.h5ad")
     model.save_model(args.output_dir / "SpaLMC_model.pt")
 
