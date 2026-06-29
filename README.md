@@ -48,12 +48,9 @@ The example script expects two `.h5ad` files:
 Spatial coordinates must be available as `adata_sp.obsm["spatial"]`. If this key
 is missing, SpaLMC will also look for `adata_sp.obs["x"]` and `adata_sp.obs["y"]`.
 
-If you use cell-type composition supervision, provide:
+If cell-type labels are available, provide:
 
 - `--celltype-key`: a column in `adata_sc.obs`.
-- `--spot-prior-csv`: an optional spot-by-cell-type prior table. Its row names
-  should match `adata_sp.obs_names`, and its columns should match the cell-type
-  categories in `adata_sc.obs[--celltype-key]`.
 
 ## 3. Run SpaLMC
 
@@ -65,18 +62,16 @@ python scripts/run_spalmc_example.py \
   --adata-sp data/example_sp.h5ad \
   --output-dir results/spalmc_example \
   --celltype-key cell_type \
-  --spot-prior-csv data/example_spot_celltype_prior.csv \
   --max-epochs 500 \
-  --top-k-spots 64 \
+  --top-k-spots 96 \
   --device cuda
 ```
 
 For CPU-only execution, replace `--device cuda` with `--device cpu`, or omit the
 argument and let SpaLMC choose the available device automatically.
 
-If you do not have a spot cell-type prior, omit `--spot-prior-csv`. If you do
-not have cell-type labels, omit both `--celltype-key` and `--spot-prior-csv`.
-The composition loss term will then be skipped internally.
+If you do not have cell-type labels, omit `--celltype-key`. The example script
+does not require any spot-level cell-type prior input.
 
 ## 4. Outputs
 
@@ -92,4 +87,4 @@ The script writes the following files to `--output-dir`:
 SpaLMC stores reconstructed coordinates in `adata_sc.obsm["spalmc_spatial"]`,
 assigned spot IDs in `adata_sc.obs["spalmc_spot_id"]`, assignment confidence in
 `adata_sc.obs["spalmc_assignment_prob"]`, and relative within-spot offsets in
-`adata_sc.obsm["spalmc_relative_offset"]`.# spalmc
+`adata_sc.obsm["spalmc_relative_offset"]`.
