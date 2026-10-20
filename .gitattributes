@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.pt -text
+*.npz -text
+*.png -text
+*.h5ad -text
