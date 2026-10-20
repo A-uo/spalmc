@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=69,<81", "wheel>=0.43,<1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spalmc-research"
+version = "0.1.0"
+description = "SpaLMC reference-to-spot integration and within-spot coordinate reconstruction"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "numpy>=1.26,<2",
+    "pandas>=2.1,<3",
+    "scipy>=1.11,<1.15",
+    "scikit-learn>=1.3,<1.9",
+    "matplotlib>=3.8,<3.11",
+    "anndata>=0.10.9,<0.13",
+    "torch==2.5.1",
+    "PyYAML>=6,<7",
+]
+
+[project.optional-dependencies]
+notebook = [
+    "jupyterlab>=4,<5",
+    "ipykernel>=6.28,<7",
+    "nbformat>=5.9,<6",
+    "IPython>=8.18,<10",
+]
+
+[project.scripts]
+spalmc-run = "spalmc.workflow:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["spalmc*"]

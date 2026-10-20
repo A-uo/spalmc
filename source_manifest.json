@@ -1,0 +1,47 @@
+{
+  "original_core": {
+    "__init__.py": "812f3cc6773a3835a8a732a8a9cc0c67aa29e55ad80bdb8acdbc2dc0549b6f01",
+    "model.py": "c44ac1a435f85c262c2710125d306fc7b1c0fce351c33dfb93f3ff1c1ed59828",
+    "modules.py": "5d344e686995d90b6f2f6f922bf606500c9674541f99a2e143233d2d141870f1",
+    "losses.py": "cb934587ec997988170757b88f6c53889e4e60f29c43861100f056e5f447d658",
+    "train.py": "70addf75a8825dc5edcbeb7989c5fafbc422e4fc0cf150f32b0e8b23a0f24184",
+    "data.py": "b27086379962f273a15d103e3f78ab71a325a63d10dcb9aa66f972be09042785",
+    "utils.py": "da57b2e0e72732545183c80e8ab24036f992a62013ec7eabfa5bbb3c249abffe",
+    "plot.py": "a14635cc4aa1d8942bc4bae91bd19d3d74a761b705185bf671777899e39a3274"
+  },
+  "examples": {
+    "seqFISH+_res500": {
+      "cells": 523,
+      "spots": 100,
+      "genes": 1000,
+      "observed_sha256": "b2e8b515989af3c610c21b046c157f7f107e31aa4e371bccbc88e934d1fa80e5",
+      "observed_keys": [
+        "counts",
+        "spot_counts",
+        "centers",
+        "cell_ids",
+        "genes"
+      ],
+      "truth_has_explicit_cell_ids": true,
+      "stage1_epochs": 200,
+      "occupied_epochs": 200
+    },
+    "STARmap_res900": {
+      "cells": 1207,
+      "spots": 198,
+      "genes": 1000,
+      "observed_sha256": "7f69457d3d383488f94d9ff61dea525984c563269c965ade5eb1c79f57265721",
+      "observed_keys": [
+        "counts",
+        "spot_counts",
+        "centers",
+        "cell_ids",
+        "genes"
+      ],
+      "truth_has_explicit_cell_ids": true,
+      "stage1_epochs": 200,
+      "occupied_epochs": 200
+    }
+  },
+  "checkpoint_note": "Copied trained weights, wrapped with complete release configuration and exact-input fingerprints; no retraining during assembly."
+}

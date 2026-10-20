@@ -1,0 +1,27 @@
+# Replace these two paths with your own h5ad files. No evaluation labels needed.
+mode: train
+decoder: occupied_anchor
+output_dir: ../outputs/custom
+threads: 2
+model:
+  device: cpu
+  spot_radius: 0.5  # In the SAME units as adata_sp.obsm['spatial'].
+  random_state: 0
+  celltype_key: null  # Or the reference obs column containing known cell types.
+  layer_key: null  # X should hold raw counts; otherwise select a counts layer.
+  density_key: null  # Uniform prior; do not use held-out cell counts here.
+  hard_assignment_mode: capacity
+  coordinate_mode: hard
+training:
+  max_epochs: 200
+  lr: 0.001
+  early_stopping: false
+occupied:
+  epochs: 200
+  residual_fraction: 0.35
+  kappa: 0.3
+datasets:
+  - name: my_sample
+    sc_path: ../my_data/reference.h5ad
+    sp_path: ../my_data/spots.h5ad
+    truth: null

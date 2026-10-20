@@ -1,90 +1,38 @@
-# SpaLMC Example Run Guide
+# SpaLMC
 
-This guide shows how to install a reproducible Python environment and run the
-example SpaLMC script with the following hyperparameters:
-
-| Parameter             | Value   |
-| --------------------- | ------- |
-| `lambda_entropy`      | `0.001` |
-| `lambda_comp`         | `0.1`   |
-| `lambda_capacity`     | `0.5`   |
-| `lambda_mani`         | `0.01`  |
-| `lambda_spatial`      | `0.01`  |
-| `lambda_fill`         | `0.1`   |
-| `lambda_anchor`       | `0.05`  |
-| `lambda_offset`       | `0.05`  |
-| `tau` / `temperature` | `0.05`  |
-| `d` / `latent_dim`    | `16`    |
-| `h` / `hidden_dim`    | `128`   |
-| `dropout`             | `0.3`   |
-| `lr`                  | `2e-4`  |
-| `weight_decay`        | `1e-3`  |
-
-## 1. Create the Environment
-
-From the project root, create and activate the Conda environment:
+## Install
 
 ```bash
-conda env create -f environment_spalmc.yml
+conda env create -f environment.yml
 conda activate spalmc
+python -m pip install -e ".[notebook]" --no-deps
+python -m ipykernel install --user --name spalmc --display-name "Python (SpaLMC)"
 ```
 
-The default environment installs the CPU version of PyTorch. For CUDA training,
-install the CUDA-enabled PyTorch build that matches your driver after activating
-the environment. For example:
+## Run
+
+From this folder, open the notebook:
 
 ```bash
-conda remove cpuonly pytorch
-conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia
+jupyter lab notebooks/run_spalmc.ipynb
 ```
 
-## 2. Input Requirements
+Select the **Python (SpaLMC)** kernel and run all cells in order.
 
-The example script expects two `.h5ad` files:
+- `MODE = 'pretrained'`: load the included checkpoints and visualize results.
+- `MODE = 'train'`: train both stages from scratch.
+- `DATASETS`: choose either or both included datasets.
+- `SHOW_REFERENCE`: show reference coordinates alongside predictions.
+- `SPOTS`: choose a spot for the detailed view.
 
-- `adata_sc`: single-cell reference data. Genes must be in `adata_sc.var_names`.
-- `adata_sp`: spatial transcriptomics data. Genes must be in `adata_sp.var_names`.
+The notebook contains seven blocks: setup, configuration, data loading, expression integration, cell localization, overall visualization, and within-spot visualization. It does not calculate benchmark metrics.
 
-Spatial coordinates must be available as `adata_sp.obsm["spatial"]`. If this key
-is missing, SpaLMC will also look for `adata_sp.obs["x"]` and `adata_sp.obs["y"]`.
+## Outputs
 
-If cell-type labels are available, provide:
+Results are saved under `outputs/notebook_<mode>_visualization/<dataset>/`:
 
-- `--celltype-key`: a column in `adata_sc.obs`.
-
-## 3. Run SpaLMC
-
-Example command:
-
-```bash
-python scripts/run_spalmc_example.py \
-  --adata-sc data/example_sc.h5ad \
-  --adata-sp data/example_sp.h5ad \
-  --output-dir results/spalmc_example \
-  --celltype-key cell_type \
-  --max-epochs 500 \
-  --top-k-spots 96 \
-  --device cuda
-```
-
-For CPU-only execution, replace `--device cuda` with `--device cpu`, or omit the
-argument and let SpaLMC choose the available device automatically.
-
-If you do not have cell-type labels, omit `--celltype-key`. The example script
-does not require any spot-level cell-type prior input.
-
-## 4. Outputs
-
-The script writes the following files to `--output-dir`:
-
-- `SpaLMC_pred_single_cell_xy.csv`: reconstructed single-cell spatial coordinates.
-- `SpaLMC_pred_cell_type_proportion.csv`: predicted per-spot cell-type proportions, when cell-type labels are available.
-- `SpaLMC_spot_fill_summary.csv`: hard and soft cell mass assigned to each spot.
-- `SpaLMC_training_history.csv`: training loss history.
-- `adata_sc_with_spalmc.h5ad`: input single-cell AnnData with SpaLMC results in `.obsm` and `.obs`.
-- `SpaLMC_model.pt`: trained SpaLMC model checkpoint.
-
-SpaLMC stores reconstructed coordinates in `adata_sc.obsm["spalmc_spatial"]`,
-assigned spot IDs in `adata_sc.obs["spalmc_spot_id"]`, assignment confidence in
-`adata_sc.obs["spalmc_assignment_prob"]`, and relative within-spot offsets in
-`adata_sc.obsm["spalmc_relative_offset"]`.
+- `cells.csv`: original cell IDs, assigned spots, and predicted coordinates.
+- `prediction.npz`: prediction arrays.
+- `spalmc_cells.h5ad`: cell data with predicted coordinates and assignments.
+- `figures/`: overall and within-spot views in PNG and SVG formats.
+- `checkpoints/`: saved models.

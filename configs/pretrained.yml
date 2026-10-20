@@ -1,0 +1,66 @@
+mode: pretrained
+decoder: occupied_anchor
+output_dir: ../outputs/pretrained
+threads: 2
+model:
+  device: cpu
+  random_state: 0
+  spot_radius: 0.5
+  celltype_key: null
+  layer_key: null
+  density_key: null
+  latent_dim: 32
+  hidden_dim: 256
+  n_layers: 2
+  dropout: 0.1
+  temperature: 0.1
+  top_k_spots: null
+  normalize: true
+  log1p: true
+  scale: true
+  coordinate_mode: hard
+  n_manifold_anchors: 32
+  local_temperature: 0.5
+  residual_scale: 0.15
+  min_cells_per_spot: 1
+  max_cells_per_spot: 25
+  coverage_assignment: true
+  hard_assignment_mode: capacity
+  capacity_slack: 1.25
+  lambda_expr: 1.0
+  lambda_comp: 1.0
+  lambda_mani: 0.1
+  lambda_spatial: 0.1
+  lambda_offset: 0.01
+  lambda_entropy: 0.01
+  lambda_capacity: 0.1
+  lambda_fill: 0.05
+  lambda_anchor: 0.1
+training:
+  max_epochs: 200
+  lr: 0.001
+  weight_decay: 0.0001
+  early_stopping: false
+  verbose: true
+  eval_every: 25
+occupied:
+  epochs: 200
+  lr: 0.001
+  residual_fraction: 0.35
+  kappa: 0.3
+  temperature_start: 0.5
+  temperature_end: 0.2
+  global_weight: 0.1
+  residual_weight: 0.01
+  seed: 0
+datasets:
+- name: seqFISH+_res500
+  observed: ../examples/seqFISH+_res500/observed.npz
+  truth: ../examples/seqFISH+_res500/evaluation_truth.npz
+  stage1_checkpoint: ../checkpoints/seqFISH+_res500/stage1.pt
+  occupied_checkpoint: ../checkpoints/seqFISH+_res500/occupied.pt
+- name: STARmap_res900
+  observed: ../examples/STARmap_res900/observed.npz
+  truth: ../examples/STARmap_res900/evaluation_truth.npz
+  stage1_checkpoint: ../checkpoints/STARmap_res900/stage1.pt
+  occupied_checkpoint: ../checkpoints/STARmap_res900/occupied.pt

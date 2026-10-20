@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "executed_code_cells": 7,
+  "embedded_images": 4,
+  "language": "English",
+  "mode": "pretrained",
+  "benchmark_metrics_computed": false,
+  "original_core_bytes_unchanged": true,
+  "datasets": [
+    {
+      "dataset": "seqFISH+_res500",
+      "cells": 523,
+      "spots": 100,
+      "identity_preserved": true,
+      "finite_coordinates": true,
+      "bounded_coordinates": true,
+      "figures": 2
+    },
+    {
+      "dataset": "STARmap_res900",
+      "cells": 1207,
+      "spots": 198,
+      "identity_preserved": true,
+      "finite_coordinates": true,
+      "bounded_coordinates": true,
+      "figures": 2
+    }
+  ]
+}
